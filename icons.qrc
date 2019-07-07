@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/menu.jpg</file>
+        <file>icons/background.jpg</file>
+        <file>icons/title.JPG</file>
+        <file>icons/startbutton.png</file>
+        <file>icons/BoardNode.png</file>
+        <file>icons/snakenode.JPG</file>
+        <file>icons/food.JPG</file>
+    </qresource>
+</RCC>
