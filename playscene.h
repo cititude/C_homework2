@@ -10,6 +10,9 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <board.h>
+#include <obstacle.h>
+#include <QList>
+
 namespace Ui {
 class playscene;
 }
@@ -22,12 +25,14 @@ public:
     explicit playscene(QWidget *parent = nullptr);
     ~playscene();
     void paintEvent(QPaintEvent* );
+    void check();
 //    void TimerEvent(QTimerEvent* );
 //    void mousePressEvent(QMouseEvent*);
 private:
     Ui::playscene *ui;
 public:
     Snake* python;
+    QList <Obstacle> obstacles;
     void keyPressEvent(QKeyEvent* );
 };
 

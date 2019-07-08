@@ -2,7 +2,9 @@
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
-
+#include <obstacle.h>
+#include <playscene.h>
+#include <QDebug>
 Board::Board(int w,int h)
 {
     width=w;
@@ -34,8 +36,9 @@ void Board::generate_food()
         newpos.x=rand()%width+1;
         newpos.y=rand()%height+1;
     }
-    while(get_impedenceid(newpos)==0&&get_snakeid(newpos)==0);
-
+    while(!(get_impedenceid(newpos)==0&&get_snakeid(newpos)==0));
+    board->setvalue(newpos,1<<2);
+    qDebug()<<"food:"<<newpos.x<<newpos.y;
 }
 
 Board* board=new Board(60,40);

@@ -16,6 +16,7 @@ class Obstacle : public QLabel
 
 public:
     explicit Obstacle(QString path,Xy_pos po,int type);
+    Obstacle(const Obstacle& other);
     ~Obstacle();
     void mymove();
     void disaapear();
@@ -34,4 +35,3 @@ private:
 
 #endif // OBSTACLE_H
 
-extern QList<Obstacle> obstacles;

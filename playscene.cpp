@@ -13,11 +13,12 @@ playscene::playscene(QWidget *parent) :
     QTimer* timer= new QTimer(this);
     timer->start(500);
     python->lengthen();
+    board->generate_food();
+    this->check();
     connect(timer,&QTimer::timeout,[=](){
         python->move();
+        this->check();
     });
-
-
 }
 playscene::~playscene()
 {
@@ -53,4 +54,42 @@ void playscene::keyPressEvent(QKeyEvent* ev)
         python->turnleft();
         break;
     }
+}
+
+void playscene::check()
+{
+    for(int i=0;i<board->width;i++)
+        for(int j=0;j<board->height;j++)
+        {
+            Xy_pos tmp=Xy_pos(i,j);
+            if(board->get_impedenceid(tmp)==1)
+            {
+                bool find=false;
+                for(int k=0;k<obstacles.size();k++)
+                {
+
+                    if(obstacles[k].get_pos()==tmp)
+                    {
+                        find=true;
+                    }
+                }
+                if(!find)
+                {
+                    Obstacle* food=new Obstacle(":/icons/icons/food.JPG",tmp,1);
+                    obstacles.push_back(*food);
+                    obstacles.back().setParent(this);
+                    obstacles.back().show();
+                }
+            }
+            if(board->get_impedenceid(tmp)==0)
+            {
+                for(int k=0;k<obstacles.size();k++)
+                {
+                    if(obstacles[k].get_pos()==tmp)
+                    {
+                        obstacles[k].hide();
+                    }
+                }
+            }
+        }
 }
