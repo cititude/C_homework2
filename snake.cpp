@@ -107,5 +107,7 @@ void Snake::lengthen()
 
 bool Snake::be_dead()
 {
+    if(board->get_snakeid(get_next())==id)return true;
+    if(get_next().x<0||get_next().x>board->width||get_next().y<0||get_next().y>board->height)return true;
     return false;
 }

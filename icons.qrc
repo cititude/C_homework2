@@ -7,5 +7,6 @@
         <file>icons/BoardNode.png</file>
         <file>icons/snakenode.JPG</file>
         <file>icons/food.JPG</file>
+        <file>icons/BackButton.png</file>
     </qresource>
 </RCC>

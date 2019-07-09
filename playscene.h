@@ -34,6 +34,9 @@ public:
     Snake* python;
     QList <Obstacle> obstacles;
     void keyPressEvent(QKeyEvent* );
+    void restore();
+signals:
+    void backtomain();
 };
 
 #endif // PLAYSCENE_H

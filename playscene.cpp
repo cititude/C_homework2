@@ -2,6 +2,8 @@
 #include "ui_playscene.h"
 #include <QPushButton>
 #include <board.h>
+#include <QMessageBox>
+#include <mypushbutton.h>
 playscene::playscene(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::playscene)
@@ -11,15 +13,30 @@ playscene::playscene(QWidget *parent) :
     python=new Snake();
     python->setParent(this);
     QTimer* timer= new QTimer(this);
-    timer->start(500);
+    timer->start(100);
     python->lengthen();
     board->generate_food();
     this->check();
     connect(timer,&QTimer::timeout,[=](){
         python->move();
         this->check();
+        if(python->be_dead())
+        {
+            qDebug()<<"dead";
+            QMessageBox::warning(this,"Game over","Game over",true,true);
+            timer->stop();
+            myPushbutton* backbtn=new myPushbutton(":/icons/icons/BackButton.png");
+            backbtn->setParent(this);
+            backbtn->move(1100,700);
+            backbtn->show();
+            connect(backbtn,&myPushbutton::clicked,[=](){
+                this->restore();
+                emit this->backtomain();
+            });
+        }
     });
 }
+
 playscene::~playscene()
 {
     delete ui;
@@ -92,4 +109,14 @@ void playscene::check()
                 }
             }
         }
+}
+
+void playscene::restore()
+{
+    for(int i=0;i<board->width;i++)
+        for(int j=0;j<board->height;j++)
+        {
+            board->setvalue(Xy_pos(i,j),0);
+        }
+    check();
 }

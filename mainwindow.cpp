@@ -72,16 +72,28 @@ MainWindow::MainWindow(QWidget *parent) :
     startbutton->setParent(this);
     startbutton->move(700,200);
     //create playscene
-    playscene* newplayscene=new playscene(this);
     connect(startbutton,&myPushbutton::clicked,[=](){
+        playscene* newplayscene=new playscene(this);
         this->hide();
         newplayscene->show();
+        connect(newplayscene,&playscene::backtomain,this,[=]()
+        {
+            this->show();
+            newplayscene->hide();
+        });
     });
     connect(NewGameAction,&QAction::triggered,[=]()
     {
+        playscene* newplayscene=new playscene(this);
         this->hide();
         newplayscene->show();
+        connect(newplayscene,&playscene::backtomain,this,[=]()
+        {
+            this->show();
+            newplayscene->hide();
+        });
     });
+
 }
 
 MainWindow::~MainWindow()
