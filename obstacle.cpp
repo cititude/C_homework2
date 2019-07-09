@@ -29,8 +29,11 @@ Obstacle::Obstacle(QString path,Xy_pos po,int type)
             move_speed=0;
             attack=0;
             break;
-        case 2:
-
+        case 2:         // walls
+            lifetime=INFINITY;
+            move_direction=0;
+            move_speed=0;
+            attack=0;
             break;
         default:
             break;

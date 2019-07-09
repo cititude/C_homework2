@@ -16,10 +16,18 @@ Snake::Snake(QWidget *parent,int newid) :
     direction=1;
     nnode=1;
     id=newid;
+    hp=10;
     for(int i=0;i<snakeBody.count();i++)
     {
         snakeBody[i].setParent(this);
     }
+    connect(board,&Board::hurt,this,[=](int iid){
+        if(iid=id)
+        {
+            qDebug()<<"bricks";
+            hp-=200;
+        }
+    });
 }
 
 Snake::~Snake()
@@ -104,10 +112,27 @@ void Snake::lengthen()
 }
 
 
-
+void Snake::lifecheck()
+{
+    if(board->get_snakeid(get_next())==id)
+    {
+        hp-=200;
+        qDebug()<<"eat itself";
+    }
+    if(get_next().x<0||get_next().x>board->width||get_next().y<0||get_next().y>board->height)
+    {
+        hp-=200;
+        qDebug()<<"boarder";
+    }
+    if(board->get_impedenceid(get_next())==2)
+    {
+        hp-=200;
+        qDebug()<<"brick";
+    }
+}
 bool Snake::be_dead()
 {
-    if(board->get_snakeid(get_next())==id)return true;
-    if(get_next().x<0||get_next().x>board->width||get_next().y<0||get_next().y>board->height)return true;
+    lifecheck();
+    if(hp<=0)return true;
     return false;
 }

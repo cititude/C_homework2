@@ -30,6 +30,7 @@ public:
 //    void mousePressEvent(QMouseEvent*);
 private:
     Ui::playscene *ui;
+    bool ispause;
 public:
     Snake* python;
     QList <Obstacle> obstacles;
@@ -37,6 +38,7 @@ public:
     void restore();
 signals:
     void backtomain();
+    void pause();
 };
 
 #endif // PLAYSCENE_H

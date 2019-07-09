@@ -8,5 +8,6 @@
         <file>icons/snakenode.JPG</file>
         <file>icons/food.JPG</file>
         <file>icons/BackButton.png</file>
+        <file>icons/brick.JPG</file>
     </qresource>
 </RCC>

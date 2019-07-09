@@ -23,11 +23,16 @@ public:
     int get_impedenceid(Xy_pos pos);
     void setvalue(Xy_pos pos,int value);
     int width,height;
+    int round=0;
 private:
     int status[100][100];  // 此数组表示棋盘上各个点的状态，使用二进制编码，后2位表示是否属于某个snake，
                            // 3,4位表示是否存在某个障碍物
 public slots:
     void generate_food();
+    void generate_bricks();
+
+signals:
+    void hurt(int iid);
 };
 
 #endif // BOARD_H

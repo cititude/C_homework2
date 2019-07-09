@@ -33,12 +33,12 @@ public:
     void move();
     bool be_dead();
     Xy_pos get_next();
+    void lifecheck();
     explicit Snake(QWidget *parent = nullptr,int newid=1);
     ~Snake();
 
 private:
     Ui::Snake *ui;
-public slots:
 
 };
 
