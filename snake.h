@@ -15,15 +15,7 @@ class Snake : public QWidget
 {
     Q_OBJECT
 public:
-    QList<snakeNode> snakeBody;
-
-    int id;
-    int speed;
-    int hp;
-    int direction;  //1:up  2:right  3: down 4: left
-
-public:
-    int nnode=0;
+    void hurt(int v);
     void turnleft();
     void turnright();
     void turnup();
@@ -33,12 +25,20 @@ public:
     bool be_dead();
     Xy_pos get_next(int round=1);
     void lifecheck();
-    explicit Snake(QWidget *parent = nullptr,int newid=1);
+    explicit Snake(QWidget *parent = nullptr,QString img="",int newid=1);
     ~Snake();
     int get_id();
     int get_direction();
-signals:
-    void attack();
+    QString imgpath;
+    virtual void keyPressEvent(QKeyEvent* );
+protected:
+    QList<snakeNode> snakeBody;
+    int id;
+    int speed;
+    int hp;
+    int direction;  //1:up  2:right  3: down 4: left
+    int nnode=0;
+    bool isAI;
 private:
     Ui::Snake *ui;
 

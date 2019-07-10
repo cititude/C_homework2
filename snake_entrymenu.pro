@@ -33,7 +33,8 @@ SOURCES += \
     snakenode.cpp \
     board.cpp \
     obstacle.cpp \
-    cobra.cpp
+    boa.cpp \
+    watersnake.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,14 +44,16 @@ HEADERS += \
     snakenode.h \
     board.h \
     obstacle.h \
-    cobra.h
+    boa.h \
+    watersnake.h
 
 FORMS += \
         mainwindow.ui \
     playscene.ui \
     snake.ui \
     obstacle.ui \
-    cobra.ui
+    boa.ui \
+    watersnake.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

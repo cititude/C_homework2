@@ -72,8 +72,5 @@ void Board::generate_bricks()
     }
 }
 
-void Board::generate_bullet(Xy_pos pos,int dir)
-{
-    board->setvalue(pos,(3<<2)+board->get_snakeid(pos));
-}
+
 Board* board=new Board(60,40);

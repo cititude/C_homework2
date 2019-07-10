@@ -10,5 +10,6 @@
         <file>icons/BackButton.png</file>
         <file>icons/brick.JPG</file>
         <file>icons/bullet.jpg</file>
+        <file>icons/snakenode2.JPG</file>
     </qresource>
 </RCC>

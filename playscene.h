@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QPainter>
-#include <snake.h>
 #include <QTimer>
 #include <QTimerEvent>
 #include <QDebug>
@@ -12,7 +11,8 @@
 #include <board.h>
 #include <obstacle.h>
 #include <QList>
-
+#include <watersnake.h>
+#include <boa.h>
 namespace Ui {
 class playscene;
 }
@@ -22,7 +22,7 @@ class playscene : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit playscene(QWidget *parent = nullptr);
+    explicit playscene(QWidget *parent = nullptr,int mode=0);
     ~playscene();
     void paintEvent(QPaintEvent* );
     void check();
@@ -31,8 +31,10 @@ public:
 private:
     Ui::playscene *ui;
     bool ispause;
+    int mode;
 public:
-    Snake* python;
+    WaterSnake* watersnake;
+    Boa* boa;
     QList <Obstacle> obstacles;
     void keyPressEvent(QKeyEvent* );
     void restore();

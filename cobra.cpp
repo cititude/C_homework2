@@ -1,14 +1,13 @@
 #include "cobra.h"
 #include "ui_cobra.h"
 
-Cobra::Cobra(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::Cobra)
+Cobra::Cobra()
+    :Snake()
 {
-    ui->setupUi(this);
+    type=1;
 }
 
 Cobra::~Cobra()
 {
-    delete ui;
+
 }

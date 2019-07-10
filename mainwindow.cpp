@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(newplayscene,&playscene::backtomain,this,[=]()
         {
             this->show();
-            newplayscene->hide();
+            newplayscene->close();
         });
     });
     connect(NewGameAction,&QAction::triggered,[=]()
@@ -90,10 +90,9 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(newplayscene,&playscene::backtomain,this,[=]()
         {
             this->show();
-            newplayscene->hide();
+            newplayscene->close();
         });
     });
-
 }
 
 MainWindow::~MainWindow()

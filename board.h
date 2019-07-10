@@ -31,7 +31,6 @@ private:
 public slots:
     void generate_food();
     void generate_bricks();
-    void generate_bullet(Xy_pos pos,int dir);
 signals:
     void hurt(int iid);
 };

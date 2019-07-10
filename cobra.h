@@ -1,18 +1,18 @@
 #ifndef COBRA_H
 #define COBRA_H
 
-#include <QWidget>
+#include <snake.h>
 
 namespace Ui {
 class Cobra;
 }
 
-class Cobra : public QWidget
+class Cobra : public Snake      //眼镜蛇，
 {
     Q_OBJECT
 
 public:
-    explicit Cobra(QWidget *parent = nullptr);
+    explicit Cobra();
     ~Cobra();
 
 private:

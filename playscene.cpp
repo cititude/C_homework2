@@ -6,29 +6,45 @@
 #include <mypushbutton.h>
 
 inline int min(int a,int b){return a<b?a:b;}
-playscene::playscene(QWidget *parent) :
+playscene::playscene(QWidget *parent,int newmode) :
     QMainWindow(parent),
     ui(new Ui::playscene)
 {
     ui->setupUi(this);
+    // initialize the board
     for(int i=0;i<board->width;i++)
         for(int j=0;j<board->height;j++)
         {
             qDebug()<<board->get_impedenceid(Xy_pos(i,j));
         }
-    qDebug()<<obstacles.isEmpty();
     setFixedSize(1200,800);
     ispause=0;
-    python=new Snake();
-    python->setParent(this);
+
+    // set mode
+    mode=newmode;
+
+    //set watersnake
+    watersnake=new WaterSnake(":/icons/icons/snakenode.JPG");
+    watersnake->setParent(this);
+
+    boa=new Boa(":/icons/icons/snakenode2.JPG");
+    boa->setParent(this);
+    //set main timer
     QTimer* timer= new QTimer(this);
-    QTimer* timer2=new QTimer(this);    //brick-generator
+
+    //brick-generator
+    QTimer* timer2=new QTimer(this);
+
+    //initialize bricks food, and snake
     for(int i=0;i<10;i++)board->generate_bricks();
     this->check();
     timer->start(100);
-    python->lengthen();
+    watersnake->lengthen();
+    boa->lengthen();
     board->generate_food();
     this->check();
+
+    //brick/food generator
     timer2->start(5000);
     connect(timer2,&QTimer::timeout,[=]()
     {
@@ -36,18 +52,22 @@ playscene::playscene(QWidget *parent) :
         board->generate_bricks();
         board->generate_food();
     });
-    connect(python,&Snake::attack,[=](){
-        if(python->get_id()!=3)return;
-        Xy_pos nnext=python->get_next(2);
-        Obstacle* bullet=new Obstacle(":/icons/icons/bullet.jpg",nnext,3,python->get_direction());
+
+    // watersnake attack behavior
+    connect(watersnake,&WaterSnake::attack,[=](){
+        Xy_pos nnext=watersnake->get_next(2);
+        Obstacle* bullet=new Obstacle(":/icons/icons/bullet.jpg",nnext,3,watersnake->get_direction());
         obstacles.push_back(*bullet);
         obstacles.back().setParent(this);
         obstacles.back().show();
         board->setvalue(nnext,(3<<2)+board->get_snakeid(nnext));
         return;
     });
+
+    //
     connect(timer,&QTimer::timeout,[=](){
-        python->move();
+        watersnake->move();
+        boa->move();
         this->check();
         connect(this,&playscene::pause,[=]()
         {
@@ -64,10 +84,10 @@ playscene::playscene(QWidget *parent) :
                 timer2->stop();
             }
         });
-        if(python->be_dead())
+        if(watersnake->be_dead()||boa->be_dead())
         {
-            qDebug()<<"dead";
-            QMessageBox::warning(this,"Game over","Game over",true,true);
+            if(watersnake->be_dead())QMessageBox::warning(this,"Game over","Game over,boa win!",true,true);
+            else QMessageBox::warning(this,"Game over","Game over,watersnake win!",true,true);
             timer->stop();
             timer2->stop();
             myPushbutton* backbtn=new myPushbutton(":/icons/icons/BackButton.png");
@@ -103,24 +123,37 @@ void playscene::keyPressEvent(QKeyEvent* ev)
 {
     switch(ev->key())
     {
-    case Qt::Key_Up:
-        python->turnup();
-        break;
-    case Qt::Key_Right:
-        python->turnright();
-        break;
-    case Qt::Key_Down:
-        python->turndown();
-        break;
-    case Qt::Key_Left:
-        python->turnleft();
-        break;
     case Qt::Key_P:
         emit this->pause();
         break;
-    case Qt::Key_Space:
-        emit python->attack();
+    case Qt::Key_Up:
+        watersnake->turnup();
         break;
+    case Qt::Key_Right:
+        watersnake->turnright();
+        break;
+    case Qt::Key_Down:
+        watersnake->turndown();
+        break;
+    case Qt::Key_Left:
+        watersnake->turnleft();
+        break;
+    case Qt::Key_Space:
+        emit watersnake->attack();
+        break;
+    case Qt::Key_W:
+        boa->turnup();
+        break;
+    case Qt::Key_D:
+        boa->turnright();
+        break;
+    case Qt::Key_S:
+        boa->turndown();
+        break;
+    case Qt::Key_A:
+        boa->turnleft();
+        break;
+    default:break;
     }
 }
 
@@ -215,8 +248,8 @@ void playscene::bullet_move()
             Xy_pos next=Xy_pos((cur.x+nnext.x)>>1,(cur.y+nnext.y)>>1);
             //qDebug()<<"bullet"<<obstacles[k].get_pos().x<<obstacles[k].get_pos().y;
             board->setvalue(cur,board->get_snakeid(cur));
-            if(board->get_snakeid(next)==1)python->hp-=3;
-            if(board->get_snakeid(nnext)==1)python->hp-=3;
+            if(board->get_snakeid(next)==1)watersnake->hurt(3);
+            if(board->get_snakeid(nnext)==1)watersnake->hurt(3);
             if(board->get_impedenceid(next)!=0)
             {
                 for(int t=0;t<obstacles.size();t++)if(obstacles[t].get_pos()==next)obstacles[t].hide();
