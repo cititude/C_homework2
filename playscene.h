@@ -36,6 +36,7 @@ public:
     QList <Obstacle> obstacles;
     void keyPressEvent(QKeyEvent* );
     void restore();
+    void bullet_move();
 signals:
     void backtomain();
     void pause();

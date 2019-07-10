@@ -2,6 +2,7 @@
 #define BOARD_H
 #include <QObject>
 
+using namespace std;
 struct Xy_pos
 {
     int x;
@@ -30,7 +31,7 @@ private:
 public slots:
     void generate_food();
     void generate_bricks();
-
+    void generate_bullet(Xy_pos pos,int dir);
 signals:
     void hurt(int iid);
 };

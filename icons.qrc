@@ -9,5 +9,6 @@
         <file>icons/food.JPG</file>
         <file>icons/BackButton.png</file>
         <file>icons/brick.JPG</file>
+        <file>icons/bullet.jpg</file>
     </qresource>
 </RCC>

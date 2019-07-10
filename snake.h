@@ -28,15 +28,17 @@ public:
     void turnright();
     void turnup();
     void turndown();
-    void attack();
     void lengthen();
     void move();
     bool be_dead();
-    Xy_pos get_next();
+    Xy_pos get_next(int round=1);
     void lifecheck();
     explicit Snake(QWidget *parent = nullptr,int newid=1);
     ~Snake();
-
+    int get_id();
+    int get_direction();
+signals:
+    void attack();
 private:
     Ui::Snake *ui;
 

@@ -15,12 +15,14 @@ class Obstacle : public QLabel
     Q_OBJECT
 
 public:
-    explicit Obstacle(QString path,Xy_pos po,int type);
+    explicit Obstacle(QString path,Xy_pos po,int ttype,int direction=0);
     Obstacle(const Obstacle& other);
     ~Obstacle();
     void mymove();
-    void disaapear();
+    bool disappear();
+    int get_type();
     Xy_pos get_pos();
+    int get_attack();
 private:
     Ui::Obstacle *ui;
     Xy_pos pos;

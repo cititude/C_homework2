@@ -14,15 +14,16 @@ Snake::Snake(QWidget *parent,int newid) :
     board->setvalue(head->xy_pos,id);
     snakeBody.push_front(*head);
     direction=1;
+    speed=1;
     nnode=1;
-    id=newid;
+    id=3;               // 仅供测试
     hp=10;
     for(int i=0;i<snakeBody.count();i++)
     {
         snakeBody[i].setParent(this);
     }
     connect(board,&Board::hurt,this,[=](int iid){
-        if(iid=id)
+        if(iid==id)
         {
             qDebug()<<"bricks";
             hp-=200;
@@ -57,45 +58,44 @@ void Snake::turndown()
     direction=3;
 }
 
-void Snake::attack()
-{
 
-}
-
-Xy_pos Snake::get_next()
+Xy_pos Snake::get_next(int round)
 {
     int x=snakeBody.front().xy_pos.x;
     int y=snakeBody.front().xy_pos.y;
     switch(direction)
     {
         case 1:
-            y-=1;
+            y-=round;
             break;
         case 2:
-            x+=1;
+            x+=round;
             break;
         case 3:
-            y+=1;
+            y+=round;
             break;
         case 4:
-            x-=1;
+            x-=round;
             break;
     }
     return Xy_pos(x,y);
 }
+
+int Snake::get_id(){return id;}
+int Snake::get_direction(){return direction;}
 void Snake::move()
 {
-    if(board->get_impedenceid(get_next())==1)       //food
-    {
+        if(board->get_impedenceid(get_next())==1)       //find food
+        {
+            lengthen();
+            //emit board->generate_food();
+            return;
+        }
         lengthen();
-        emit board->generate_food();
-        return;
-    }
-    lengthen();
-    snakeBody.back().setVisible(false);
-    board->setvalue(snakeBody.back().xy_pos,0);
-    if(!snakeBody.isEmpty())snakeBody.pop_back();
-    nnode--;
+        snakeBody.back().setVisible(false);
+        board->setvalue(snakeBody.back().xy_pos,0);
+        if(!snakeBody.isEmpty())snakeBody.pop_back();
+        nnode--;
 }
 
 

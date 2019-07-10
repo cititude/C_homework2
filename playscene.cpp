@@ -11,6 +11,12 @@ playscene::playscene(QWidget *parent) :
     ui(new Ui::playscene)
 {
     ui->setupUi(this);
+    for(int i=0;i<board->width;i++)
+        for(int j=0;j<board->height;j++)
+        {
+            qDebug()<<board->get_impedenceid(Xy_pos(i,j));
+        }
+    qDebug()<<obstacles.isEmpty();
     setFixedSize(1200,800);
     ispause=0;
     python=new Snake();
@@ -30,6 +36,16 @@ playscene::playscene(QWidget *parent) :
         board->generate_bricks();
         board->generate_food();
     });
+    connect(python,&Snake::attack,[=](){
+        if(python->get_id()!=3)return;
+        Xy_pos nnext=python->get_next(2);
+        Obstacle* bullet=new Obstacle(":/icons/icons/bullet.jpg",nnext,3,python->get_direction());
+        obstacles.push_back(*bullet);
+        obstacles.back().setParent(this);
+        obstacles.back().show();
+        board->setvalue(nnext,(3<<2)+board->get_snakeid(nnext));
+        return;
+    });
     connect(timer,&QTimer::timeout,[=](){
         python->move();
         this->check();
@@ -38,7 +54,7 @@ playscene::playscene(QWidget *parent) :
             if(ispause)
             {
                 ispause=0;
-                timer->start(100);
+                timer->start(500);
                 timer2->start(5000);
             }
             else
@@ -102,6 +118,9 @@ void playscene::keyPressEvent(QKeyEvent* ev)
     case Qt::Key_P:
         emit this->pause();
         break;
+    case Qt::Key_Space:
+        emit python->attack();
+        break;
     }
 }
 
@@ -111,57 +130,106 @@ void playscene::check()
         for(int j=0;j<board->height;j++)
         {
             Xy_pos tmp=Xy_pos(i,j);
-            if(board->get_impedenceid(tmp)==1)
+            if(board->get_impedenceid(tmp)==1)  //find food
             {
                 bool find=false;
                 for(int k=0;k<obstacles.size();k++)
                 {
-
-                    if(obstacles[k].get_pos()==tmp)
+                    if(obstacles[k].get_pos()==tmp&&obstacles[k].get_type()==1) //food is shown
                     {
                         find=true;
+                        obstacles[k].show();
+                        break;
                     }
                 }
-                if(!find)
+                if(!find)                           // food isn't shown
                 {
                     Obstacle* food=new Obstacle(":/icons/icons/food.JPG",tmp,1);
                     obstacles.push_back(*food);
+                    food=nullptr;
                     obstacles.back().setParent(this);
                     obstacles.back().show();
                 }
             }
-            if(board->get_impedenceid(tmp)==2)
+            if(board->get_impedenceid(tmp)==2)  //  find brick
             {
                 bool find=false;
                 for(int k=0;k<obstacles.size();k++)
                 {
-
-                    if(obstacles[k].get_pos()==tmp)
+                    if(obstacles[k].get_pos()==tmp&&obstacles[k].get_type()==2) //brick is shown
                     {
                         find=true;
+                        obstacles[k].show();
+                        break;
                     }
                 }
-                if(!find)
+                if(!find)                           //brick isn't shown
                 {
-                    Obstacle* food=new Obstacle(":/icons/icons/brick.JPG",tmp,1);
-                    obstacles.push_back(*food);
+                    Obstacle* brick=new Obstacle(":/icons/icons/brick.JPG",tmp,2);
+                    obstacles.push_back(*brick);
+                    brick=nullptr;
                     obstacles.back().setParent(this);
                     obstacles.back().show();
                 }
             }
-            if(board->get_impedenceid(tmp)==0)
+            if(board->get_impedenceid(tmp)==0)      // find nothing
+            {
+                for(int k=0;k<obstacles.size();k++)
+                {
+                    if(obstacles[k].get_pos()==tmp) // if something shown, hide it
+                    {
+                        obstacles[k].hide();
+                        //obstacles.removeAt(k);
+                    }
+                }
+            }
+            if(board->get_impedenceid(tmp)==3)
             {
                 for(int k=0;k<obstacles.size();k++)
                 {
                     if(obstacles[k].get_pos()==tmp)
                     {
-                        obstacles[k].hide();
+                        if(obstacles[k].disappear())
+                        {
+                            obstacles[k].hide();
+                            board->setvalue(tmp,0);
+                        }
+                        else obstacles[k].show();
                     }
                 }
             }
         }
+    this->bullet_move();
 }
 
+void playscene::bullet_move()
+{
+    for(int k=0;k<obstacles.size();k++)
+    {
+        if(obstacles[k].get_type()==3&&!obstacles[k].disappear())
+        {
+            //qDebug()<<"bullet"<<obstacles[k].get_pos().x<<obstacles[k].get_pos().y;
+            Xy_pos cur=obstacles[k].get_pos();
+            obstacles[k].mymove();
+            Xy_pos nnext=obstacles[k].get_pos();
+            Xy_pos next=Xy_pos((cur.x+nnext.x)>>1,(cur.y+nnext.y)>>1);
+            //qDebug()<<"bullet"<<obstacles[k].get_pos().x<<obstacles[k].get_pos().y;
+            board->setvalue(cur,board->get_snakeid(cur));
+            if(board->get_snakeid(next)==1)python->hp-=3;
+            if(board->get_snakeid(nnext)==1)python->hp-=3;
+            if(board->get_impedenceid(next)!=0)
+            {
+                for(int t=0;t<obstacles.size();t++)if(obstacles[t].get_pos()==next)obstacles[t].hide();
+            }
+            if(board->get_impedenceid(nnext)!=0)
+            {
+                for(int t=0;t<obstacles.size();t++)if(obstacles[t].get_pos()==nnext)obstacles[t].hide();
+            }
+            board->setvalue(nnext,board->get_snakeid(nnext)+(3<<2));
+            obstacles[k].show();
+        }
+    }
+}
 void playscene::restore()
 {
     for(int i=0;i<board->width;i++)
@@ -169,5 +237,9 @@ void playscene::restore()
         {
             board->setvalue(Xy_pos(i,j),0);
         }
-    check();
+    for(int i=0;i<obstacles.size();i++)
+    {
+        obstacles[i].hide();
+    }
+    board->round=0;
 }

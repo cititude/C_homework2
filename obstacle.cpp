@@ -4,7 +4,7 @@
 #include <QDebug>
 
 #define INFINITY 1000000000
-Obstacle::Obstacle(QString path,Xy_pos po,int type)
+Obstacle::Obstacle(QString path,Xy_pos po,int ttype,int direction)
 {
     QPixmap pix;
     imgpath=path;
@@ -16,10 +16,11 @@ Obstacle::Obstacle(QString path,Xy_pos po,int type)
         return ;
     }
     this->setFixedSize(20,20);
-    pix.scaled(20,20);
+    pix=pix.scaled(20,20);
     this->setStyleSheet("QLabel{border:0px;}");
     this->setPixmap(pix);
     pos=po;
+    type=ttype;
     this->move(pos.x*20,pos.y*20);
     switch(type)
     {
@@ -34,6 +35,12 @@ Obstacle::Obstacle(QString path,Xy_pos po,int type)
             move_direction=0;
             move_speed=0;
             attack=0;
+            break;
+        case 3:
+            lifetime=20;
+            move_direction=direction;
+            move_speed=2;
+            attack=3;
             break;
         default:
             break;
@@ -75,12 +82,37 @@ Obstacle::~Obstacle()
 
 void Obstacle::mymove()
 {
-
+    Xy_pos to_pos=this->pos;
+    switch (this->move_direction) {
+        case 1:
+            to_pos.y-=move_speed;
+            break;
+        case 2:
+            to_pos.x+=move_speed;
+            break;
+        case 3:
+            to_pos.y+=move_speed;
+            break;
+        case 4:
+            to_pos.x-=move_speed;
+            break;
+    }
+    pos.x=to_pos.x;
+    pos.y=to_pos.y;
+    this->move(to_pos.x*20,to_pos.y*20);
+    lifetime--;
+    qDebug()<<"lifetime"<<lifetime;
 }
 
-void Obstacle::disaapear()
+bool Obstacle::disappear()
 {
+    if(lifetime<=0)return true;
+    return false;
+}
 
+int Obstacle::get_type()
+{
+    return type;
 }
 
 Xy_pos Obstacle::get_pos()
@@ -88,3 +120,8 @@ Xy_pos Obstacle::get_pos()
     return pos;
 }
 
+
+int Obstacle::get_attack()
+{
+    return attack;
+}
