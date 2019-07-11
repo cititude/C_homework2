@@ -16,6 +16,7 @@ public:
     explicit Boa(QString img="");         //蟒蛇，可以穿过自己的身体
     ~Boa();
     void keyPressEvent(QKeyEvent* );
+    void automove();
 private:
     Ui::Boa *ui;
 };

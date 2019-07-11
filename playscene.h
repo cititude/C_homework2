@@ -22,7 +22,7 @@ class playscene : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit playscene(QWidget *parent = nullptr,int mode=0);
+    explicit playscene(QWidget *parent = nullptr,int mod=0,int dif=2);
     ~playscene();
     void paintEvent(QPaintEvent* );
     void check();
@@ -31,6 +31,7 @@ public:
 private:
     Ui::playscene *ui;
     bool ispause;
+    int difficulty;
     int mode;
 public:
     WaterSnake* watersnake;

@@ -3,13 +3,11 @@
 #include <QPushButton>
 #include <QDebug>
 #include <board.h>
-
-Snake::Snake(QWidget *parent,QString img,int newid) :
-    QWidget(parent),
-    ui(new Ui::Snake)
+#include <cstdlib>
+Snake::Snake(QWidget *parent,QString img) :
+    QWidget(parent)
 {
 //    srand((unsigned) time(NULL));
-    ui->setupUi(this);
     this->setFixedSize(1200,800);
     snakeNode* head=new snakeNode(img,rand()%50+2,rand()%33+2);
     board->setvalue(head->xy_pos,id);
@@ -17,10 +15,11 @@ Snake::Snake(QWidget *parent,QString img,int newid) :
     direction=1;
     speed=1;
     nnode=1;
-    id=1;               // 仅供测试
+    id=1;
     hp=10;
     isAI=false;
     imgpath=img;
+    score=0;
     for(int i=0;i<snakeBody.count();i++)
     {
         snakeBody[i].setParent(this);
@@ -37,7 +36,7 @@ Snake::Snake(QWidget *parent,QString img,int newid) :
 
 Snake::~Snake()
 {
-    delete ui;
+
 }
 
 void Snake::turnleft()
@@ -89,17 +88,20 @@ int Snake::get_id(){return id;}
 int Snake::get_direction(){return direction;}
 void Snake::move()
 {
-        if(board->get_impedenceid(get_next())==1)       //find food
-        {
-            lengthen();
-            //emit board->generate_food();
-            return;
-        }
+    lifecheck();
+    if(board->get_impedenceid(get_next())==1)       //find food
+    {
         lengthen();
-        snakeBody.back().setVisible(false);
-        board->setvalue(snakeBody.back().xy_pos,0);
-        if(!snakeBody.isEmpty())snakeBody.pop_back();
-        nnode--;
+        score++;
+        board->generate_food();
+        //emit board->generate_food();
+        return;
+    }
+    lengthen();
+    snakeBody.back().setVisible(false);
+    board->setvalue(snakeBody.back().xy_pos,0);
+    if(!snakeBody.isEmpty())snakeBody.pop_back();
+    nnode--;
 }
 
 
@@ -151,7 +153,6 @@ void Snake::lifecheck()
 
 bool Snake::be_dead()
 {
-    lifecheck();
     if(hp<=0)return true;
     return false;
 }
@@ -159,4 +160,9 @@ bool Snake::be_dead()
 void Snake::hurt(int v)
 {
     hp-=v;
+}
+
+int Snake::get_score()
+{
+    return score;
 }

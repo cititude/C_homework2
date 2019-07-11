@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <settingdialog.h>
+
 namespace Ui {
 class MainWindow;
 }
@@ -16,6 +18,9 @@ public:
     void paintEvent(QPaintEvent* );
 private:
     Ui::MainWindow *ui;
+    SettingDialog* settingdia;
+    bool islogin=false;
+    QString user;
 };
 
 #endif // MAINWINDOW_H

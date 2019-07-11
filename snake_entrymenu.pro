@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
-
+QT += multimedia
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = snake_entrymenu
@@ -34,7 +34,9 @@ SOURCES += \
     board.cpp \
     obstacle.cpp \
     boa.cpp \
-    watersnake.cpp
+    watersnake.cpp \
+    settingdialog.cpp \
+    logindialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -45,7 +47,9 @@ HEADERS += \
     board.h \
     obstacle.h \
     boa.h \
-    watersnake.h
+    watersnake.h \
+    settingdialog.h \
+    logindialog.h
 
 FORMS += \
         mainwindow.ui \
@@ -53,7 +57,9 @@ FORMS += \
     snake.ui \
     obstacle.ui \
     boa.ui \
-    watersnake.ui
+    watersnake.ui \
+    settingdialog.ui \
+    logindialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

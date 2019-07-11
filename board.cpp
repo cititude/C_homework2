@@ -14,12 +14,14 @@ Board::Board(int w,int h)
 
 int Board::get_snakeid(Xy_pos pos)
 {
+    if(pos.x<0||pos.y<0)return 0;
     return status[pos.x][pos.y]&3;
 }
 
 int Board::get_impedenceid(Xy_pos pos)
 {
-    return (status[pos.x][pos.y]&(3<<2))>>2;
+    if(pos.x<0||pos.x>=width||pos.y<0||pos.y>=height)return 4;
+    else return (status[pos.x][pos.y]&(3<<2))>>2;
 }
 
 void Board::setvalue(Xy_pos pos,int value)

@@ -4,24 +4,22 @@
 #include <board.h>
 #include <QMessageBox>
 #include <mypushbutton.h>
+#include <QSound>
 
 inline int min(int a,int b){return a<b?a:b;}
-playscene::playscene(QWidget *parent,int newmode) :
+playscene::playscene(QWidget *parent,int newmode,int dif) :
     QMainWindow(parent),
     ui(new Ui::playscene)
 {
     ui->setupUi(this);
+    //this->setAttribute(Qt::WA_DeleteOnClose);
     // initialize the board
-    for(int i=0;i<board->width;i++)
-        for(int j=0;j<board->height;j++)
-        {
-            qDebug()<<board->get_impedenceid(Xy_pos(i,j));
-        }
     setFixedSize(1200,800);
     ispause=0;
 
-    // set mode
+    // set mode,difficulty,music
     mode=newmode;
+    difficulty=dif;
 
     //set watersnake
     watersnake=new WaterSnake(":/icons/icons/snakenode.JPG");
@@ -36,12 +34,17 @@ playscene::playscene(QWidget *parent,int newmode) :
     QTimer* timer2=new QTimer(this);
 
     //initialize bricks food, and snake
-    for(int i=0;i<10;i++)board->generate_bricks();
+    for(int i=0;i<difficulty*10;i++)board->generate_bricks();
     this->check();
     timer->start(100);
     watersnake->lengthen();
     boa->lengthen();
+    if(mode==2)
+    {
+        for(int k=1;k<=10;k++)boa->lengthen();
+    }
     board->generate_food();
+
     this->check();
 
     //brick/food generator
@@ -66,8 +69,9 @@ playscene::playscene(QWidget *parent,int newmode) :
 
     //
     connect(timer,&QTimer::timeout,[=](){
+        if(mode==2&&!boa->be_dead())boa->automove();
         watersnake->move();
-        boa->move();
+        if(!boa->be_dead())boa->move();
         this->check();
         connect(this,&playscene::pause,[=]()
         {
@@ -86,18 +90,29 @@ playscene::playscene(QWidget *parent,int newmode) :
         });
         if(watersnake->be_dead()||boa->be_dead())
         {
-            if(watersnake->be_dead())QMessageBox::warning(this,"Game over","Game over,boa win!",true,true);
-            else QMessageBox::warning(this,"Game over","Game over,watersnake win!",true,true);
-            timer->stop();
-            timer2->stop();
-            myPushbutton* backbtn=new myPushbutton(":/icons/icons/BackButton.png");
-            backbtn->setParent(this);
-            backbtn->move(1100,700);
-            backbtn->show();
-            connect(backbtn,&myPushbutton::clicked,[=](){
-                this->restore();
-                emit this->backtomain();
-            });
+            if(mode==2&&boa->be_dead()&&!watersnake->be_dead())
+            {
+
+            }
+            else
+            {
+                if(watersnake->be_dead())
+                {
+                    if(mode==1)QMessageBox::warning(this,"Game over","Game over,green win!",true,true);
+                    else QMessageBox::warning(this,"Game over","Game over!",true,true);
+                }
+                else QMessageBox::warning(this,"Game over","Game over,orange win!",true,true);
+                timer->stop();
+                timer2->stop();
+                myPushbutton* backbtn=new myPushbutton(":/icons/icons/BackButton.png");
+                backbtn->setParent(this);
+                backbtn->move(1100,700);
+                backbtn->show();
+                connect(backbtn,&myPushbutton::clicked,[=](){
+                    this->restore();
+                    emit this->backtomain();
+                });
+            }
         }
     });
 }
@@ -248,8 +263,10 @@ void playscene::bullet_move()
             Xy_pos next=Xy_pos((cur.x+nnext.x)>>1,(cur.y+nnext.y)>>1);
             //qDebug()<<"bullet"<<obstacles[k].get_pos().x<<obstacles[k].get_pos().y;
             board->setvalue(cur,board->get_snakeid(cur));
-            if(board->get_snakeid(next)==1)watersnake->hurt(3);
-            if(board->get_snakeid(nnext)==1)watersnake->hurt(3);
+            if(board->get_snakeid(next)==1)boa->hurt(3);
+            if(board->get_snakeid(nnext)==1)boa->hurt(3);
+            if(board->get_snakeid(next)==2)watersnake->hurt(3);
+            if(board->get_snakeid(nnext)==2)watersnake->hurt(3);
             if(board->get_impedenceid(next)!=0)
             {
                 for(int t=0;t<obstacles.size();t++)if(obstacles[t].get_pos()==next)obstacles[t].hide();

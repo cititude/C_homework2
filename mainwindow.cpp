@@ -12,10 +12,15 @@
 #include<mypushbutton.h>
 #include<playscene.h>
 #include <board.h>
+#include <QSound>
+#include <QMessageBox>
+#include <logindialog.h>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    this->setAttribute(Qt::WA_DeleteOnClose);
     //create menubar
     ui->setupUi(this);
     setFixedSize(1200,800);
@@ -35,9 +40,35 @@ MainWindow::MainWindow(QWidget *parent) :
     QMenu* HelpMenu=bar->addMenu("help");
 
     //create menu options
-    QAction* FightModeAction=SettingMenu->addAction("Fighting Mode");
+    QAction* GameSetting=SettingMenu->addAction("Game Setting");
     SettingMenu->addSeparator();
-    QAction* DifficultyAction=SettingMenu->addAction("Difficulty");
+    QAction* Logout=SettingMenu->addAction("Logout");
+    QAction* Login=SettingMenu->addAction("Login");
+    //login dialog
+    connect(Login,&QAction::triggered,[=]()
+    {
+        if(islogin)
+        {
+            QMessageBox::information(this,"information","You have logged in!",true,true);
+        }
+        else
+        {
+            LoginDialog* login=new LoginDialog();
+
+            //
+            login->exec();
+        }
+    });
+
+    connect(Logout,&QAction::triggered,[=](){
+        islogin=false;
+        user="";
+    });
+    settingdia=new SettingDialog;
+    connect(GameSetting,&QAction::triggered,[=](){
+        settingdia->show();
+    });
+
     QAction* ContinueGameAction=OptionMenu->addAction("Continue");
     QAction* NewGameAction=OptionMenu->addAction("New game");
 
@@ -67,13 +98,17 @@ MainWindow::MainWindow(QWidget *parent) :
     pa.setColor(QPalette::WindowText,Qt::blue);
     title->setPalette(pa);
     title->move(600,-100);
+
     // create start button
     myPushbutton* startbutton=new myPushbutton(":/icons/icons/startbutton.png");
     startbutton->setParent(this);
     startbutton->move(700,200);
+
     //create playscene
     connect(startbutton,&myPushbutton::clicked,[=](){
-        playscene* newplayscene=new playscene(this);
+        int difficulty=settingdia->cbox1->currentText().toInt();
+        int mode=settingdia->cbox2->currentIndex()+1;
+        playscene* newplayscene=new playscene(this,mode,difficulty);
         this->hide();
         newplayscene->show();
         connect(newplayscene,&playscene::backtomain,this,[=]()
@@ -84,7 +119,9 @@ MainWindow::MainWindow(QWidget *parent) :
     });
     connect(NewGameAction,&QAction::triggered,[=]()
     {
-        playscene* newplayscene=new playscene(this);
+        int difficulty=settingdia->cbox1->currentText().toInt();
+        int mode=settingdia->cbox2->currentIndex()+1;
+        playscene* newplayscene=new playscene(this,mode,difficulty);
         this->hide();
         newplayscene->show();
         connect(newplayscene,&playscene::backtomain,this,[=]()

@@ -25,10 +25,11 @@ public:
     bool be_dead();
     Xy_pos get_next(int round=1);
     void lifecheck();
-    explicit Snake(QWidget *parent = nullptr,QString img="",int newid=1);
+    explicit Snake(QWidget *parent = nullptr,QString img="");
     ~Snake();
     int get_id();
     int get_direction();
+    int get_score();
     QString imgpath;
     virtual void keyPressEvent(QKeyEvent* );
 protected:
@@ -39,9 +40,7 @@ protected:
     int direction;  //1:up  2:right  3: down 4: left
     int nnode=0;
     bool isAI;
-private:
-    Ui::Snake *ui;
-
+    int score;
 };
 
 #endif // SNAKE_H
