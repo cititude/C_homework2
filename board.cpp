@@ -1,4 +1,4 @@
-#include "board.h"
+﻿#include "board.h"
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
@@ -10,6 +10,14 @@ Board::Board(int w,int h)
     width=w;
     height=h;
     memset(status,0,sizeof(status));
+    for(int i=0;i<width+3;i++)
+    {
+        status[i][height]=2<<2;
+    }
+    for(int i=0;i<height+3;i++)
+    {
+        status[width][i]=2<<2;
+    }
 }
 
 int Board::get_snakeid(Xy_pos pos)

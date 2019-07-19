@@ -1,4 +1,4 @@
-#ifndef MYPUSHBUTTON_H
+﻿#ifndef MYPUSHBUTTON_H
 #define MYPUSHBUTTON_H
 
 #include<QPushButton>

@@ -1,4 +1,4 @@
-#include "playscene.h"
+﻿#include "playscene.h"
 #include "ui_playscene.h"
 #include <QPushButton>
 #include <board.h>
@@ -12,9 +12,9 @@ playscene::playscene(QWidget *parent,int newmode,int dif) :
     ui(new Ui::playscene)
 {
     ui->setupUi(this);
-    //this->setAttribute(Qt::WA_DeleteOnClose);
     // initialize the board
     setFixedSize(1200,800);
+    setWindowTitle("SNAKE FIGHTING");
     ispause=0;
 
     // set mode,difficulty,music
@@ -47,7 +47,7 @@ playscene::playscene(QWidget *parent,int newmode,int dif) :
 
     this->check();
 
-    //brick/food generator
+    // brick/food generator
     timer2->start(5000);
     connect(timer2,&QTimer::timeout,[=]()
     {
@@ -99,7 +99,11 @@ playscene::playscene(QWidget *parent,int newmode,int dif) :
                 if(watersnake->be_dead())
                 {
                     if(mode==1)QMessageBox::warning(this,"Game over","Game over,green win!",true,true);
-                    else QMessageBox::warning(this,"Game over","Game over!",true,true);
+                    else
+                    {
+                        this->score=board->round*0.3+watersnake->get_score()*(difficulty*0.7+1);
+                        QMessageBox::warning(this,"Game over","Game over! Your score is "+QString::number(score),true,true);
+                    }
                 }
                 else QMessageBox::warning(this,"Game over","Game over,orange win!",true,true);
                 timer->stop();
@@ -136,6 +140,7 @@ void playscene::paintEvent(QPaintEvent* )
 
 void playscene::keyPressEvent(QKeyEvent* ev)
 {
+    bool flag=true;
     switch(ev->key())
     {
     case Qt::Key_P:
@@ -168,7 +173,7 @@ void playscene::keyPressEvent(QKeyEvent* ev)
     case Qt::Key_A:
         boa->turnleft();
         break;
-    default:break;
+    default:flag=false;
     }
 }
 
@@ -227,7 +232,6 @@ void playscene::check()
                     if(obstacles[k].get_pos()==tmp) // if something shown, hide it
                     {
                         obstacles[k].hide();
-                        //obstacles.removeAt(k);
                     }
                 }
             }
@@ -280,6 +284,8 @@ void playscene::bullet_move()
         }
     }
 }
+
+int playscene::get_score(){return score;}
 void playscene::restore()
 {
     for(int i=0;i<board->width;i++)
@@ -292,4 +298,5 @@ void playscene::restore()
         obstacles[i].hide();
     }
     board->round=0;
+
 }

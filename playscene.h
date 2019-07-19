@@ -33,6 +33,7 @@ private:
     bool ispause;
     int difficulty;
     int mode;
+    int score=0;
 public:
     WaterSnake* watersnake;
     Boa* boa;
@@ -40,6 +41,7 @@ public:
     void keyPressEvent(QKeyEvent* );
     void restore();
     void bullet_move();
+    int get_score();
 signals:
     void backtomain();
     void pause();

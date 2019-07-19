@@ -14,7 +14,8 @@ class LoginDialog : public QDialog
 public:
     explicit LoginDialog(QWidget *parent = nullptr);
     ~LoginDialog();
-
+    static int Score;
+    static QString user;
 private slots:
     void on_pushButton_2_clicked();
 
