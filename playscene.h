@@ -1,4 +1,4 @@
-#ifndef PLAYSCENE_H
+﻿#ifndef PLAYSCENE_H
 #define PLAYSCENE_H
 
 #include <QMainWindow>
@@ -26,13 +26,11 @@ public:
     ~playscene();
     void paintEvent(QPaintEvent* );
     void check();
-//    void TimerEvent(QTimerEvent* );
-//    void mousePressEvent(QMouseEvent*);
 private:
     Ui::playscene *ui;
     bool ispause;
     int difficulty;
-    int mode;
+    int mode;   //mode=1 双人对战 mode=2人机对战
     int score=0;
 public:
     WaterSnake* watersnake;

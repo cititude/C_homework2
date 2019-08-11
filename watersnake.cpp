@@ -1,4 +1,4 @@
-#include "watersnake.h"
+﻿#include "watersnake.h"
 #include "ui_watersnake.h"
 #include <QKeyEvent>
 #include <QDebug>
@@ -6,6 +6,7 @@ WaterSnake::WaterSnake(QString img) :
     Snake (nullptr,img)
 {
     id=2;
+    nbullet=10;
 }
 
 WaterSnake::~WaterSnake()
@@ -15,7 +16,6 @@ WaterSnake::~WaterSnake()
 
 void WaterSnake::keyPressEvent(QKeyEvent* ev)
 {
-    qDebug()<<"enter key";
     switch(ev->key())
     {
     case Qt::Key_Up:
@@ -34,4 +34,11 @@ void WaterSnake::keyPressEvent(QKeyEvent* ev)
         emit attack();
         break;
     }
+}
+
+bool WaterSnake::try_attack()
+{
+    if(nbullet<=0)return false;
+    nbullet--;
+    return true;
 }

@@ -41,9 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction* helpc=HelpMenu->addAction("help(Chinese)");
     connect(helpc,&QAction::triggered,[=](){
        QMessageBox::information(this,"help",QString::fromLocal8Bit("      本游戏共有两种模式，分别为双人对战模式与人机对战模式，且可以通过调整难度（difficulty）改变地图中的障碍物的个数，可以在设置（setting）菜单中选择所需要的对战模式（fighting mode）。\n"
-                                "        游戏中共有两种不同类型的蛇，其中橙色的蛇通过键盘的上下左右键控制其运动方向，橙色的蛇的蛇头不能够与自身身体相碰，否则会立刻死亡。可以通过按下空格键控制橙色的蛇发射子弹，被子弹击中将会损减部分生命值。绿色的蛇通过键盘的wasd键控制其运动方向，其蛇头可以与自身的蛇身相碰，甚至可以穿过自己的身体，但不能够发射子弹攻击对方。两只蛇的蛇头均不能够碰到对方的蛇身或障碍物（黑色方块）。\n"
+                                "        游戏中共有两种不同类型的蛇，其中橙色的蛇通过键盘的上下左右键控制其运动方向，橙色的蛇的蛇头不能够与自身身体相碰，否则会立刻死亡。可以通过按下空格键控制橙色的蛇发射子弹，被子弹击中将会损减部分生命值,被击中3次后死亡。绿色的蛇通过键盘的wasd键控制其运动方向，其蛇头可以与自身的蛇身相碰，甚至可以穿过自己的身体，但不能够发射子弹攻击对方。两只蛇的蛇头均不能够碰到对方的蛇身或障碍物（黑色方块）。\n"
                                 "        游戏中按键P可以暂停游戏，再次按P键可以继续游戏。\n"
-                                "        在双人对战模式中，用户的目的是存活的时间更久。在人机对战模式中，用户的目的是得分尽可能高。得分计算方式为：坚持的回合数*0.03+所吃食物数*(难度系数*0.7+1)。\n"
+                                "        在双人对战模式中，用户的目的是在存活的时间更久，若在30回合时仍未有角色死亡，则比较积分。在人机对战模式中，用户的目的是积分尽可能高。积分计算方式为：坚持的回合数*0.03+所吃食物数*(难度系数*0.7+1)。\n"
                                 "        用户可以选择setting菜单中的login命令进行注册登陆，登陆后的最高分数据会予以保存。当然，用户也可以选择不注册登陆直接开始游戏。\n"
                                 "        祝您游戏愉快！"),true,true);
     });
@@ -56,20 +56,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //user information
     QLabel* login_warning=new QLabel("Warning: You haven't log in.");
-    QLabel* highest_score=new QLabel();
     QFont labelft;
     labelft.setPointSize(20);
     labelft.setFamily("行楷");
     QPalette labelpa;
     labelpa.setColor(QPalette::WindowText,Qt::red);
     login_warning->move(600,150);
-    highest_score->move(600,150);
     login_warning->setParent(this);
-    highest_score->setParent(this);
     login_warning->setFont(labelft);
     login_warning->setPalette(labelpa);
-    highest_score->setFont(labelft);
-    highest_score->setPalette(labelpa);
     login_warning->show();
 
     //login dialog
@@ -83,12 +78,13 @@ MainWindow::MainWindow(QWidget *parent) :
         {
             LoginDialog* login=new LoginDialog();
             login->exec();
-            islogin=true;
-            score=LoginDialog::Score;
-            user=LoginDialog::user;
-            login_warning->hide();
-            highest_score->setText("Highest Score: "+QString::number(score));
-            highest_score->show();
+            if(LoginDialog::logged==true)
+            {
+                islogin=true;
+                score=LoginDialog::Score;
+                user=LoginDialog::user;
+                login_warning->setText("Highest Score: "+QString::number(score));
+            }
         }
     });
 
@@ -96,9 +92,11 @@ MainWindow::MainWindow(QWidget *parent) :
         islogin=false;
         user="";
         score=0;
+        LoginDialog::Score=0;
+        LoginDialog::user="";
+        LoginDialog::logged=false;
         QMessageBox::information(this,"logout successfully","logout successfully",true,true);
-        login_warning->show();
-        highest_score->hide();
+        login_warning->setText("Warning: You haven't log in.");
     });
     settingdia=new SettingDialog;
     connect(GameSetting,&QAction::triggered,[=](){
@@ -106,7 +104,10 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     QAction* NewGameAction=OptionMenu->addAction("New game");
-
+    QAction* Quit=OptionMenu->addAction("quit");
+    connect(Quit,&QAction::triggered,[=](){
+        this->close();
+    });
     //create tool bar
     QToolBar* toolbar=new QToolBar(this);
     addToolBar(Qt::LeftToolBarArea,toolbar);
@@ -117,7 +118,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QStatusBar* stBar=statusBar();
     setStatusBar(stBar);
     QLabel* qlabel=new QLabel();
-    qlabel->setText("author: cititude");
+    qlabel->setText("author: Can Chang");
     stBar->addPermanentWidget(qlabel);
 
     //create title
@@ -150,8 +151,7 @@ MainWindow::MainWindow(QWidget *parent) :
         {
             this->show();
             score=max(score,newplayscene->get_score());
-            if(islogin&&mode==2)highest_score->setText("Highest Score: "+QString::number(score));
-            else highest_score->hide();
+            if(islogin&&mode==2)login_warning->setText("Highest Score: "+QString::number(score));
             if(islogin)save_info();
             newplayscene->close();
         });
@@ -167,8 +167,7 @@ MainWindow::MainWindow(QWidget *parent) :
         {
             this->show();
             score=max(score,newplayscene->get_score());
-            if(islogin&&mode==2)highest_score->setText("Highest Score: "+QString::number(score));
-            else highest_score->hide();
+            if(islogin&&mode==2)login_warning->setText("Highest Score: "+QString::number(score));
             if(islogin)save_info();
             newplayscene->close();
         });
@@ -188,6 +187,7 @@ void MainWindow::paintEvent(QPaintEvent* )
     painter.drawPixmap(0,0,this->width(),this->height(),pix);
 }
 
+//将用户最高分存入文档
 void MainWindow::save_info()
 {
     QFile* fileread=new QFile("C:/Users/hp/Documents/snake_entrymenu/database/data.txt");

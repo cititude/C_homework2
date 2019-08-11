@@ -1,4 +1,4 @@
-#include "logindialog.h"
+﻿#include "logindialog.h"
 #include "ui_logindialog.h"
 #include <QFile>
 #include <QDebug>
@@ -6,12 +6,15 @@
 
 int LoginDialog::Score=0;
 QString LoginDialog::user="";
+bool LoginDialog::logged=false;
 LoginDialog::LoginDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::LoginDialog)
 {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_DeleteOnClose);
+    this->setWindowTitle("Log in");
+    this->setWindowIcon(QIcon(":/icons/icons/background.jpg"));
 }
 
 LoginDialog::~LoginDialog()
@@ -19,6 +22,7 @@ LoginDialog::~LoginDialog()
     delete ui;
 }
 
+//登录按钮
 void LoginDialog::on_pushButton_2_clicked()
 {
     QFile* file=new QFile("C:/Users/hp/Documents/snake_entrymenu/database/data.txt");
@@ -39,7 +43,6 @@ void LoginDialog::on_pushButton_2_clicked()
             qint64 linelength=file->readLine(buf,sizeof(buf));
             if(linelength==-1)break;
             QString info(buf);
-            qDebug()<<info;
             QStringList list=info.split(' ');
             if(list.count()<=2)continue;
             name=list[0];
@@ -56,6 +59,7 @@ void LoginDialog::on_pushButton_2_clicked()
             QMessageBox::information(this,"login successfully","login successfully",true,true);
             this->Score=score.toInt();
             this->user=name;
+            this->logged=true;
             file->close();
             this->close();
         }
@@ -68,6 +72,7 @@ void LoginDialog::on_pushButton_2_clicked()
     }
 }
 
+//注册按钮
 void LoginDialog::on_pushButton_clicked()
 {
     QFile* file=new QFile("C:/Users/hp/Documents/snake_entrymenu/database/data.txt");

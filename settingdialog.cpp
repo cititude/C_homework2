@@ -1,4 +1,4 @@
-#include "settingdialog.h"
+﻿#include "settingdialog.h"
 #include "ui_settingdialog.h"
 
 SettingDialog::SettingDialog(QWidget *parent) :
@@ -6,6 +6,8 @@ SettingDialog::SettingDialog(QWidget *parent) :
     ui(new Ui::SettingDialog)
 {
     ui->setupUi(this);
+    this->setWindowTitle("Game Mode");
+    this->setWindowIcon(QIcon(":/icons/icons/background.jpg"));
     label1=new QLabel("Difficulty");
     label2=new QLabel("Mode");
     label1->setParent(this);

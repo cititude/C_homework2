@@ -1,9 +1,8 @@
-#include "obstacle.h"
+﻿#include "obstacle.h"
 #include "ui_obstacle.h"
 #include <QPixmap>
 #include <QDebug>
 
-#define INFINITY 1000000000
 Obstacle::Obstacle(QString path,Xy_pos po,int ttype,int direction)
 {
     QPixmap pix;
@@ -54,11 +53,9 @@ Obstacle::Obstacle(const Obstacle& other)
     lifetime=other.lifetime;
     move_direction=other.move_direction;
     move_speed=other.move_speed;
-    type=other.type;           // 1:food
-    can_pass=other.can_pass;
+    type=other.type;
     attack=other.attack;
     imgpath=other.imgpath;
-
     QPixmap pix;
     pix.load(imgpath);
     bool ret =pix.load(imgpath);

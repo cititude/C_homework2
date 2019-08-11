@@ -13,7 +13,4 @@
         <file>icons/snakenode2.JPG</file>
     </qresource>
     <qresource prefix="/music"/>
-    <qresource prefix="/musi">
-        <file>music/background.mp3</file>
-    </qresource>
 </RCC>

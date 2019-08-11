@@ -1,4 +1,4 @@
-#include "snakenode.h"
+﻿#include "snakenode.h"
 #include <QDebug>
 #include <board.h>
 snakeNode::snakeNode(QString imgpath,int xx,int yy)

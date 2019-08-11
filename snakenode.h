@@ -1,4 +1,4 @@
-#ifndef SNAKENODE_H
+﻿#ifndef SNAKENODE_H
 #define SNAKENODE_H
 #include <QWidget>
 #include <QLabel>
@@ -13,7 +13,6 @@ public:
     snakeNode(const snakeNode& othernode);
     Xy_pos xy_pos;
 private:
-   // xy-position
     QString img;    //background picture
 };
 

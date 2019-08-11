@@ -1,4 +1,4 @@
-#ifndef SETTINGDIALOG_H
+﻿#ifndef SETTINGDIALOG_H
 #define SETTINGDIALOG_H
 
 #include <QDialog>
@@ -20,7 +20,7 @@ public:
      QLabel* label2;
      QComboBox* cbox1;
      QComboBox* cbox2;
-    Ui::SettingDialog *ui;
+     Ui::SettingDialog *ui;
 };
 
 #endif // SETTINGDIALOG_H

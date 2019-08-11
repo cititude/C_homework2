@@ -75,7 +75,7 @@ void Board::generate_bricks()
             {
                 if((i-30)*(i-30)+(j-20)*(j-20)>(36-round)*(36-round))
                 {                    
-                    if(get_snakeid(Xy_pos(i,j))!=0) emit hurt(get_snakeid(Xy_pos(i,j)));
+                    if(get_snakeid(Xy_pos(i,j))!=0) emit kill(get_snakeid(Xy_pos(i,j)));
                     board->setvalue(Xy_pos(i,j),2<<2);
                 }
             }

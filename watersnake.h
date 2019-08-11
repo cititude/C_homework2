@@ -1,4 +1,4 @@
-#ifndef WATERSNAKE_H
+﻿#ifndef WATERSNAKE_H
 #define WATERSNAKE_H
 
 #include <QWidget>
@@ -14,7 +14,9 @@ public:
     explicit WaterSnake(QString img="");
     ~WaterSnake();
     void keyPressEvent(QKeyEvent* );
+    bool try_attack();
 private:
+    int nbullet;
     Ui::WaterSnake *ui;
 signals:
     void attack();
